@@ -28,7 +28,7 @@ def output():
     local_range = local_ip + "/24"
     global_range = ip + "/24"
     print(f"""
-Pyifconfig v 1.0
+Pyifconfig v1.0
 
         
     Global ipv4: {ip}  
@@ -37,12 +37,41 @@ Pyifconfig v 1.0
             
     Provider range: {global_range}
             
-    Local ipv4: {local_range}
+    Local ipv4: {local_range}    
+                      """) 
+
+def parse_argument(key):
+    index = sys.argv.index(key) + 1
+    option = sys.argv[index]
+    return option
+
+def man_page():
+    print("""
+Pyifconfig v1.0
+Coded by: ViCoder32
+    
+    Simple, but effective util for definition ipv4 in LAN&WAN, also print ip ranges and have function for export data in JSON format. 
+    This util can help people which conducting pentest, setup network, or just want get need information for 2 seconds.
+    Maybe in new commits will new functions
 
 
-Note:    
-    Add --json to get json
-                  """) 
+    --help 
+        Print in terminal man page which see right now
+    
+    --json <path/filename>
+        Saved data in good json format and print in stdout, also you can save 
+        data in file
+        
+    None 
+        Just print data in comfortable format, horewer this you should already know :>> 
+
+
+
+
+
+          """)
+    sys.exit()
+
 def get_json():
     local_ip = get_local_ipv4() 
     ip = get_info_ipv4()
@@ -57,8 +86,30 @@ def main():
         sys.exit()
     elif "--json" in sys.argv:
         output = get_json()
-        print(output)
+        option = parse_argument("--json")
+        if option != None:
+            if option.endswith(".json"):
+                with open(option, "w") as f:
+                    f.write(output)
+                    if "/" in option:
+                        print(f"Json file saved to {option}")
+                        sys.exit()
+                    else:
+                        print(f"Json file was created {option}")
+            else:
+                option = option + ".json"
+                with open(option, "w") as f:
+                    f.write(option)
+                    if "/" in option:
+                        print(f"Json file saved to {option}")
+                        sys.exit()
+                    elif '/' not in option:
+                        print(f"Json file was created")
+ 
+    elif "--help" in sys.argv:
+        man_page()
+
     else:
-        sys.exit(colored("[!] Invalid arguments" ,"red"))
+        sys.exit('Usage: pyifconfig <option> <data> \n For get man page use "--help" ')
 if __name__ == '__main__':
     main()
