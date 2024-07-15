@@ -50,14 +50,14 @@ def get_json():
     lrange = local_ip + "/24"
     raw = [ip ,local_ip, lrange, ip_range]
     data = json.dumps(raw)    
-    print(data)
+    return data
 def main():
     if len(sys.argv) <= 1:
         output()
         sys.exit()
     elif "--json" in sys.argv:
-        get_json()
-
+        output = get_json()
+        print(output)
     else:
         sys.exit(colored("[!] Invalid arguments" ,"red"))
 if __name__ == '__main__':
