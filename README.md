@@ -23,7 +23,7 @@ chmod +x install.sh
 pyifconfig 
 
 #Output
-#Pyifconfig v 1.0
+#Pyifconfig v 1.1
 
         
    # Global ip: 123.456.789.012  
