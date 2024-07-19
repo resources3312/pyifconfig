@@ -4,18 +4,33 @@ import sys
 from subprocess import getoutput
 from termcolor import colored
 import socket
+
+
+
 def get_info_ipv4():
     res = requests.get("https://ifconfig.me/ip")
     ip = res.text
-    return ip
+    if len(ip) < 16:
+        ipv4 = "v4" + ip
+        return ipv4     
+    else:
+        ipv6 = "v6" + ip
+        return ipv6
 
-
-
+def creat_range(ip):
+    if ip.startswith("v6"):
+        ip = ip[2:] + "/64"
+        return ip
+    elif ip.startswith("v4"):
+        ip = ip[2:] + "/24"
+        return ip
+    else:
+        return None
 def get_local_ipv4():
     try:    
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         s.connect(("8.8.8.8", 80))
-        ip = s.getsockname()[0]
+        ip = "v4" + s.getsockname()[0]
         return ip
     except:
         sys.exit(colored("[ERROR] Connect to network and try again" ,"red"))
@@ -23,27 +38,33 @@ def get_local_ipv4():
 
 
 def output():
-    local_ip = get_local_ipv4()
-    ip = get_info_ipv4()  
-    local_range = local_ip + "/24"
-    global_range = ip + "/24"
+    local_ip = get_local_ipv4()[2:]
+    ip = get_info_ipv4()[2:]  
+    local_range = creat_range(get_local_ipv4())
+    global_range = creat_range(get_info_ipv4())
     print(f"""
 Pyifconfig v1.0
 
         
-    Global ipv4: {ip}  
+    Global ip: {ip}  
             
-    Local ipv4: {local_ip} 
+    Local ip: {local_ip} 
             
-    Provider range: {global_range}
+    Global range: {global_range}
             
-    Local ipv4: {local_range}    
-                      """) 
+    Local range: {local_range}    
+
+
+          """) 
 
 def parse_argument(key):
-    index = sys.argv.index(key) + 1
-    option = sys.argv[index]
-    return option
+    try: 
+        index = sys.argv.index(key) + 1
+        option = sys.argv[index]
+        return option
+    
+    except:
+        return None
 
 def man_page():
     print("""
@@ -73,43 +94,55 @@ Coded by: ViCoder32
     sys.exit()
 
 def get_json():
-    local_ip = get_local_ipv4() 
-    ip = get_info_ipv4()
-    ip_range = ip + "/24"
-    lrange = local_ip + "/24"
-    raw = [ip ,local_ip, lrange, ip_range]
-    data = json.dumps(raw)    
-    return data
-def main():
+    sip = get_info_ipv4()
+    if sip.startswith("v4"): 
+        ip = sip[2:]
+        local_ip = get_local_ipv4()[2:] 
+        ip_range = creat_range(get_info_ipv4())
+        lrange = creat_range(get_local_ipv4())
+        raw = [ip ,local_ip, lrange, ip_range]
+        data = json.dumps(raw)    
+        return data
+    else:
+        ip = sip[2:]
+        local_ip = get_local_ipv4() 
+        ip_range = creat_range(get_info_ipv4())
+        lrange = creat_range(get_local_ipv4)
+        raw = [ip ,local_ip, lrange, ip_range]
+        data = json.dumps(raw)    
+        return data
+
+def argument_handler():
     if len(sys.argv) <= 1:
         output()
         sys.exit()
-    elif "--json" in sys.argv:
-        output = get_json()
-        option = parse_argument("--json")
-        if option != None:
-            if option.endswith(".json"):
-                with open(option, "w") as f:
-                    f.write(output)
-                    if "/" in option:
-                        print(f"Json file saved to {option}")
-                        sys.exit()
-                    else:
-                        print(f"Json file was created {option}")
-            else:
-                option = option + ".json"
-                with open(option, "w") as f:
-                    f.write(option)
-                    if "/" in option:
-                        print(f"Json file saved to {option}")
-                        sys.exit()
-                    elif '/' not in option:
-                        print(f"Json file was created")
- 
     elif "--help" in sys.argv:
         man_page()
 
+    elif "--json" in sys.argv:
+        option = parse_argument("--json")
+        if option == None:
+            sys.exit(get_json())
+        else:
+            if option.endswith(".json"):
+                data = get_json()
+                with open(option, "w") as f:
+                    f.write(data)
+                    sys.exit("Json file was created")
+                 
+            else:
+                name = option + ".json"
+                data = get_json()
+                with open( name, "w") as f:
+                    f.write(data)
+                    sys.exit("Json file was created")
+                                                    
     else:
-        sys.exit('Usage: pyifconfig <option> <data> \n For get man page use "--help" ')
+        man_page()
+
+def main():
+    argument_handler()
+
+
 if __name__ == '__main__':
     main()
