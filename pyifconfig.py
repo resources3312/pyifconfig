@@ -10,26 +10,26 @@ you can get ip ranges and export data in json format
 
 """
 # I am semolina :>>
-###########################################
+###########################################################
 import json
 import requests
 import sys
 from subprocess import getoutput
-from termcolor import colored
 import socket
 
 
-
 def get_info_ipv4():
-    res = requests.get("https://ifconfig.me/ip")
-    ip = res.text
-    if len(ip) < 16:
-        ipv4 = "v4" + ip
-        return ipv4     
-    else:
-        ipv6 = "v6" + ip
-        return ipv6
-
+    try:
+        res = requests.get("https://ifconfig.me/ip")
+        ip = res.text
+        if len(ip) < 16:
+            ipv4 = "v4" + ip
+            return ipv4     
+        else:
+            ipv6 = "v6" + ip
+            return ipv6
+    except:
+        return "None"
 def creat_range(ip):
     if ip.startswith("v6"):
         ip = ip[2:] + "/64"
@@ -46,8 +46,7 @@ def get_local_ipv4():
         ip = "v4" + s.getsockname()[0]
         return ip
     except:
-        sys.exit(colored("[ERROR] Connect to network and try again" ,"red"))
-
+        return "None"
 
 
 def output():
