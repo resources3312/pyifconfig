@@ -1,11 +1,15 @@
 # Pyifconfig
 
-Simple, but effective util for definition ipv4 in LAN&WAN, 
-also print ip ranges and have function for export data in JSON format.
-This util can help people which conducting pentest, or just want get 
-need information for 2 seconds. Maybe in new commits will new functions
+Pyifconfig this basic ifconfig on steroids. Simple, but effective util 
+for definition ipv4 in LAN&WAN, also print ip ranges and have function
+for export data in JSON format. This util can help people which conducting
+pentest, or just want get need information for 2 seconds. Maybe in new 
+commits will new functions
+
 
 # Install
+
+
 ```bash
 git clone https://github.com/resources3312/pyifconfig
 cd pyifconfig

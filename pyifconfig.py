@@ -1,3 +1,16 @@
+#!/usr/bin/python
+
+"""
+Pyifconfig v1.1
+
+Coded by: ViCoder32
+
+Util for get data about your global and local ip, also 
+you can get ip ranges and export data in json format
+
+"""
+# I am semolina :>>
+###########################################
 import json
 import requests
 import sys
