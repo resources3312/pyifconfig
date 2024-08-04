@@ -29,7 +29,7 @@ def get_info_ipv4():
             ipv6 = "v6" + ip
             return ipv6
     except:
-        return "None"
+        return None
 def creat_range(ip):
     if ip.startswith("v6"):
         ip = ip[2:] + "/64"
@@ -65,8 +65,6 @@ Pyifconfig v1.0
     Global range: {global_range}
             
     Local range: {local_range}    
-
-
           """) 
 
 def parse_argument(key):
@@ -97,12 +95,7 @@ Coded by: ViCoder32
         
     None 
         Just print data in comfortable format, horewer this you should already know :>> 
-
-
-
-
-
-          """)
+""")
     sys.exit()
 
 def get_json():
